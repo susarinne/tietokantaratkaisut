@@ -1,8 +1,8 @@
 # Ignore Eclipse specific files
-/.metadata/
-/.classpath
-/.project
-/.settings/
+.metadata/
+.classpath
+.project
+.settings/
 
 # Ignore target directory
 target/
