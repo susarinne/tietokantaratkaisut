@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="3.0"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+
+  <persistence-unit name="LibraryPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>com.example.jpa.entity.Author</class>
+    <class>com.example.jpa.entity.Biography</class>
+    <class>com.example.jpa.entity.Book</class>
+    <class>com.example.jpa.entity.BorrowedBook</class>
+    <class>com.example.jpa.entity.EBook</class>
+    <class>com.example.jpa.entity.PrintedBook</class>
+    <class>com.example.jpa.entity.Student</class>
+
+    <properties>
+        <property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
+
+        <!-- Database connection settings -->
+        <property name="jakarta.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/tietokantaratkaisut"/>
+        <property name="jakarta.persistence.jdbc.user" value="${DB_USER}"/>
+        <property name="jakarta.persistence.jdbc.password" value="${DB_PASSWORD}"/>
+
+        <!-- Hibernate settings -->
+        <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+        <property name="hibernate.hbm2ddl.auto" value="update"/>
+        <property name="hibernate.format_sql" value="true"/>
+        <property name="hibernate.show_sql" value="true"/>
+        <property name="hibernate.use_sql_comments" value="true"/>
+    </properties>
+  </persistence-unit>
+</persistence>
+
