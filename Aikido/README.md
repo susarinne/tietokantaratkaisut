@@ -12,18 +12,18 @@ This application demonstrates advanced JPA features including:
 -   Optimistic locking for concurrent data modification
 -   JPQL and Criteria API queries
 
-## Relationships
-
--   Student to TrainingSession: Many-to-Many via Attendance join entity
--   Instructor to TrainingSession: Many-to-One relationship
--   Student to ProgressReport: One-to-Many relationship
-
-### Project Structure
+## Project Structure
 
 -   src/main/java/model/: Entity classes
 -   src/main/java/dao/: Data access objects
 -   src/main/java/converter/: Custom JPA converters
 -   src/main/java/Main.java: Main application with JPQL and Criteria API examples
+
+### Relationships
+
+-   Student to TrainingSession: Many-to-Many via Attendance join entity
+-   Instructor to TrainingSession: Many-to-One relationship
+-   Student to ProgressReport: One-to-Many relationship
 
 ### JPQL Queries
 
