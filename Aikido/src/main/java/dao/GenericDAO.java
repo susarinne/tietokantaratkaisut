@@ -14,10 +14,21 @@ public abstract class GenericDAO<T> {
     }
 
     public void save(T entity) {
-        EntityTransaction tx = entityManager.getTransaction();
-        tx.begin();
-        entityManager.persist(entity);
-        tx.commit();
+        boolean hasTransaction = !entityManager.getTransaction().isActive();
+        try {
+            if (hasTransaction) {
+                entityManager.getTransaction().begin();
+            }
+            entityManager.persist(entity);
+            if (hasTransaction) {
+                entityManager.getTransaction().commit();
+            }
+        } catch (Exception e) {
+            if (hasTransaction) {
+                entityManager.getTransaction().rollback();
+            }
+            throw e;
+        }
     }
 
     public T findById(Long id) {
