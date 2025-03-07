@@ -1,13 +1,19 @@
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
     <persistence-unit name="aikidoPU">
+        <class>model.Student</class>
+        <class>model.Instructor</class>
+        <class>model.TrainingSession</class>
+        <class>model.Attendance</class>
+        <class>model.ProgressReport</class>
         <properties>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/week7_inclass"/>
-            <property name="jakarta.persistence.jdbc.user" value="root"/>
-            <property name="jakarta.persistence.jdbc.password" value="Test12"/>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/tietokantaratkaisut"/>
+            <property name="jakarta.persistence.jdbc.user" value="${DB_USER}"/>
+            <property name="jakarta.persistence.jdbc.password" value="${DB_PASSWORD}"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true" />
         </properties>
     </persistence-unit>
 </persistence>

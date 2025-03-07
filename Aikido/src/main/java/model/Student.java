@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+
+import converter.*;
+
+import java.util.HashSet;
 
 @Entity
 @Table(name = "students")
@@ -15,7 +21,11 @@ public class Student {
 
     private String name;
     private String email;
-    private String rank;
+
+    @Convert(converter = AikidoRankConverter.class)
+    private AikidoRank rank;
+
+    @Column(name = "join_date")
     private LocalDate joinDate;
 
     @Column(name = "created_at", updatable = false)
@@ -27,23 +37,36 @@ public class Student {
     @Transient
     private int membershipDuration;
 
-    @ManyToMany
-    @JoinTable(
-            name = "training_session_students", // This is the join table
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "training_session_id")
-    )
-    private List<TrainingSession> trainingSessions;
+    /*
+     * A Student can attend multiple TrainingSessions,
+     * and each session can have multiple students
+     * (Many-to-Many via Attendance).
+     */
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Attendance> attendances = new HashSet<>();
 
-    public Student() {}
+    /*
+     * Each Student can have multiple ProgressReports,
+     * but each report is linked to a single Student
+     * (One-to-Many).
+     */
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProgressReport> progressReports = new ArrayList<>();
 
-    public Student(String name, String email, String rank, LocalDate joinDate) {
+    public Student() {
+    }
+
+    public Student(String name, String email, AikidoRank rank, LocalDate joinDate) {
         this.name = name;
         this.email = email;
         this.rank = rank;
         this.joinDate = joinDate;
     }
 
+    /*
+     * Implement @PrePersist and @PreUpdate to automatically
+     * set timestamps when entities are created or updated.
+     */
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -60,20 +83,99 @@ public class Student {
         this.membershipDuration = LocalDate.now().getYear() - joinDate.getYear();
     }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public String getRank() { return rank; }
-    public LocalDate getJoinDate() { return joinDate; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public int getMembershipDuration() { return membershipDuration; }
-    public List<TrainingSession> getTrainingSessions() { return trainingSessions; }
+    public void addAttendance(Attendance attendance) {
+        attendances.add(attendance);
+        attendance.setStudent(this);
+    }
 
-    public void setName(String name) { this.name = name; }
-    public void setEmail(String email) { this.email = email; }
-    public void setRank(String rank) { this.rank = rank; }
-    public void setJoinDate(LocalDate joinDate) { this.joinDate = joinDate; }
-    public void setTrainingSessions(List<TrainingSession> trainingSessions) { this.trainingSessions = trainingSessions; }
+    public void removeAttendance(Attendance attendance) {
+        attendances.remove(attendance);
+        attendance.setStudent(null);
+    }
+
+    public void addProgressReport(ProgressReport progressReport) {
+        progressReports.add(progressReport);
+        progressReport.setStudent(this);
+    }
+
+    public void removeProgressReport(ProgressReport progressReport) {
+        progressReports.remove(progressReport);
+        progressReport.setStudent(null);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public AikidoRank getRank() {
+        return rank;
+    }
+
+    public void setRank(AikidoRank rank) {
+        this.rank = rank;
+    }
+
+    public LocalDate getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(LocalDate joinDate) {
+        this.joinDate = joinDate;
+    }
+
+    public int getMembershipDuration() {
+        return membershipDuration;
+    }
+
+    public Set<Attendance> getAttendances() {
+        return attendances;
+    }
+
+    public void setAttendances(Set<Attendance> attendances) {
+        this.attendances = attendances;
+    }
+
+    public List<ProgressReport> getProgressReports() {
+        return progressReports;
+    }
+
+    public void setProgressReports(List<ProgressReport> progressReports) {
+        this.progressReports = progressReports;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", rank='" + rank + '\'' +
+                ", joinDate=" + joinDate +
+                '}';
+    }
+
 }
